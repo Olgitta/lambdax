@@ -1,0 +1,16 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - npm install
+  build:
+    commands:
+      - npm run build
+#      # Explicitly create a zip file of the output
+#      - zip -r my-artifact.zip dist/
+
+artifacts:
+  files:
+    - bld.zip
+  discard-paths: yes
