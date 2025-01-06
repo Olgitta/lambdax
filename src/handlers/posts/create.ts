@@ -4,6 +4,8 @@ import {
   Context,
 } from 'aws-lambda';
 import { Logger } from '@aws-lambda-powertools/logger';
+import { initializeDatabase } from '../../infra-mysql/connection';
+
 const logger = new Logger();
 
 export const handler = async (
@@ -13,6 +15,8 @@ export const handler = async (
   let response: APIGatewayProxyResult;
   const { path, httpMethod } = event;
   const { awsRequestId } = context;
+
+  await initializeDatabase();
 
   // Append awsRequestId to each log statement
   logger.appendKeys({

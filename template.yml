@@ -8,6 +8,8 @@ Resources:
       Handler: dist/handlers/posts/create.handler
       Runtime: nodejs20.x
       CodeUri: .
+#      Layers:
+#        - !Ref InfraMysqlLayer
       Events:
         Api:
           Type: Api
@@ -22,5 +24,14 @@ Resources:
       BuildProperties:
         Minify: false
         Target: es2020
+        External:
+          - pg-hstore
+          - pg
         EntryPoints:
           - src/handlers/posts/create.ts
+#  InfraMysqlLayer:
+#    Type: AWS::Serverless::LayerVersion
+#    Properties:
+#      ContentUri: ./infra-mysql.zip
+#      CompatibleRuntimes:
+#        - nodejs20.x

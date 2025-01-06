@@ -18,10 +18,16 @@ export const getMysqlCredentials = async (): Promise<IMysqlCredentials> => {
     process.env.NODE_ENV,
   );
 
+  /*
+  MYSQL_HOST=devel.chgssmycw9ms.eu-north-1.rds.amazonaws.com
+MYSQL_USER=admin
+MYSQL_PWD=Osipenko939a
+MYSQL_DATABASE=devel
+   */
   // Return local credentials for development
   if (process.env.NODE_ENV === 'dev') {
     return {
-      host: 'localhost',
+      host: 'host.docker.internal',
       user: 'root',
       password: '',
       database: 'devel',
