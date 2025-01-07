@@ -18,14 +18,8 @@ export const getMysqlCredentials = async (): Promise<IMysqlCredentials> => {
     process.env.NODE_ENV,
   );
 
-  /*
-  MYSQL_HOST=devel.chgssmycw9ms.eu-north-1.rds.amazonaws.com
-MYSQL_USER=admin
-MYSQL_PWD=Osipenko939a
-MYSQL_DATABASE=devel
-   */
-  // Return local credentials for development
-  if (process.env.NODE_ENV === 'dev') {
+  // Return local credentials for none production
+  if (process.env.NODE_ENV !== 'production') {
     return {
       host: 'host.docker.internal',
       user: 'root',
@@ -34,8 +28,7 @@ MYSQL_DATABASE=devel
     };
   }
 
-  // Derive the secret name dynamically
-  const secretName = `mysql/devel`;
+  const secretName = 'prod/mysql/devel';
 
   const client = new SecretsManagerClient({ region: REGION });
 
@@ -53,7 +46,6 @@ MYSQL_DATABASE=devel
 
     const credentials = JSON.parse(response.SecretString);
 
-    // Map the secret fields to MySQL credentials format
     return {
       host: credentials.host,
       user: credentials.username,

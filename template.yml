@@ -7,31 +7,26 @@ Resources:
     Properties:
       Handler: dist/handlers/posts/create.handler
       Runtime: nodejs20.x
+      MemorySize: 128
+      Timeout: 100
       CodeUri: .
-#      Layers:
-#        - !Ref InfraMysqlLayer
       Events:
         Api:
           Type: Api
           Properties:
             Path: /posts
             Method: POST
-      Environment:
-        Variables:
-          NODE_ENV: "dev"
+#      Environment:
+#        Variables:
+#          NODE_ENV: "production"
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
-        Minify: false
+        Minify: true
         Target: es2020
         External:
+          - aws-sdk
           - pg-hstore
           - pg
         EntryPoints:
           - src/handlers/posts/create.ts
-#  InfraMysqlLayer:
-#    Type: AWS::Serverless::LayerVersion
-#    Properties:
-#      ContentUri: ./infra-mysql.zip
-#      CompatibleRuntimes:
-#        - nodejs20.x

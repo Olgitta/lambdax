@@ -1,30 +1,15 @@
-import {
-  APIGatewayProxyEvent,
-  APIGatewayProxyResult,
-  Context,
-} from 'aws-lambda';
-import { Logger } from '@aws-lambda-powertools/logger';
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { initializeDatabase } from '../../infra-mysql/connection';
-
-const logger = new Logger();
 
 export const handler = async (
   event: APIGatewayProxyEvent,
-  context: Context,
 ): Promise<APIGatewayProxyResult> => {
   let response: APIGatewayProxyResult;
   const { path, httpMethod } = event;
-  const { awsRequestId } = context;
 
   await initializeDatabase();
 
-  // Append awsRequestId to each log statement
-  logger.appendKeys({
-    requestId: awsRequestId,
-  });
-
-  // Log the incoming event
-  logger.info('Lambda invocation event', { path, httpMethod });
+  console.info('Lambda invocation event', { path, httpMethod });
 
   try {
     response = {
@@ -33,7 +18,7 @@ export const handler = async (
         message: 'hello world',
       }),
     };
-    logger.info(
+    console.info(
       `Successful response from API endpoint: ${path}`,
       response.body,
     );
@@ -44,7 +29,7 @@ export const handler = async (
         message: 'some error happened',
       }),
     };
-    logger.error(`Error response from API endpoint: ${err}`, response.body);
+    console.error(`Error response from API endpoint: ${err}`, response.body);
   }
 
   return response;

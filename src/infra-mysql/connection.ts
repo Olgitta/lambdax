@@ -1,15 +1,13 @@
 import { Sequelize, Model, ModelStatic } from 'sequelize';
 import mysql2 from 'mysql2';
-import { Logger } from '@aws-lambda-powertools/logger';
 import getMysqlCredentials from '../aws-secrets/index';
-
-const logger = new Logger();
 
 let sequelize: Sequelize;
 
 export async function initializeDatabase(): Promise<void> {
   if (sequelize) {
-    logger.info(`Already connected to MySQL.`);
+    console.info(`Already connected to MySQL.`);
+    return;
   }
 
   const { host, user, password, database } = await getMysqlCredentials();
@@ -29,20 +27,20 @@ export async function initializeDatabase(): Promise<void> {
     });
 
     await sequelize.authenticate(); // Ensure connection works
-    logger.info(`Connected to MySQL: ${host}/${database}`);
+    console.info(`Connected to MySQL: ${host}/${database}`);
   } catch (error) {
-    logger.error(`Error connecting to MySQL: ${host}/${database}`, { error });
+    console.error(`Error connecting to MySQL: ${host}/${database}`, { error });
     throw error;
   }
 }
 
 export async function closeDatabaseConnection(): Promise<void> {
   try {
-    logger.info('Closing MySQL connection...');
+    console.info('Closing MySQL connection...');
     await sequelize.close();
-    logger.info('MySQL connection closed.');
+    console.info('MySQL connection closed.');
   } catch (error) {
-    logger.error('Error disconnecting from MySQL:', { error });
+    console.error('Error disconnecting from MySQL:', { error });
   }
 }
 
@@ -51,7 +49,7 @@ export async function mysqlPing(): Promise<boolean> {
     await sequelize.authenticate();
     return true;
   } catch (error) {
-    logger.error('MySQL ping failed:', { error });
+    console.error('MySQL ping failed:', { error });
     return false;
   }
 }
