@@ -4,6 +4,8 @@ phases:
   install:
     commands:
       - npm install
+  pre_build:
+    - npm prune --production
   build:
     commands:
       - npm run build
