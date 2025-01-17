@@ -4,7 +4,8 @@
   "private": true,
   "license": "ISC",
   "scripts": {
-    "build": "tsc",
+    "build:dev": "tsc",
+    "build": "node ./scripts/esbuild.js",
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
     "test": "jest",
@@ -16,6 +17,7 @@
     "@types/jest": "^29.5.14",
     "@typescript-eslint/eslint-plugin": "^8.19.0",
     "@typescript-eslint/parser": "^8.19.0",
+    "esbuild": "^0.24.2",
     "eslint": "^9.17.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
