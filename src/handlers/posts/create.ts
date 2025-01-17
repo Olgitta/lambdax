@@ -1,35 +1,43 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { initializeDatabase } from '../../infra-mysql/connection';
+import { createPost } from './crud';
+import { IPostCreatePayload, IPostRequestBody } from './definitions';
+import { toJson } from '../../utils/jsonUtil';
 
 export const handler = async (
   event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> => {
   let response: APIGatewayProxyResult;
-  const { path, httpMethod } = event;
-
-  await initializeDatabase();
-
-  console.info('Lambda invocation event', { path, httpMethod });
+  let { path, httpMethod, body } = event;
+  console.info('Lambda invocation event', { path, httpMethod, body });
 
   try {
+    // todo: validation
+    if (!body) {
+      body = '';
+    }
+    const parsedBody = toJson<IPostRequestBody>(body);
+    console.log(JSON.stringify(parsedBody, null, 4));
+    let payload: IPostCreatePayload = {
+      userId: 1,
+      title: parsedBody.title,
+      content: parsedBody.content,
+    };
+
+    const result = await createPost(payload);
+    console.log(JSON.stringify(result, null, 4));
     response = {
       statusCode: 200,
-      body: JSON.stringify({
-        message: 'hello world',
-      }),
+      body: JSON.stringify(result),
     };
-    console.info(
-      `Successful response from API endpoint: ${path}`,
-      response.body,
-    );
-  } catch (err) {
+  } catch (error) {
+    console.error(error);
+    // AWS Lambda has a hard limit of 6 MB for synchronous responses.
     response = {
       statusCode: 500,
       body: JSON.stringify({
-        message: 'some error happened',
+        error: error,
       }),
     };
-    console.error(`Error response from API endpoint: ${err}`, response.body);
   }
 
   return response;

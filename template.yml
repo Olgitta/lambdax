@@ -2,6 +2,15 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 
 Resources:
+
+  DependenciesLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      CompatibleRuntimes:
+        - nodejs20.x
+      ContentUri: ./deps.zip
+      Description: Dependencies for Lambda functions
+
   createPostFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -9,6 +18,8 @@ Resources:
       Runtime: nodejs20.x
       MemorySize: 128
       Timeout: 100
+      Layers:
+        - !Ref DependenciesLayer
       CodeUri: .
       Events:
         Api:
@@ -16,17 +27,20 @@ Resources:
           Properties:
             Path: /posts
             Method: POST
-#      Environment:
-#        Variables:
-#          NODE_ENV: "production"
+      Environment:
+        Variables:
+          NODE_ENV: "production"
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
-        Minify: true
+        Minify: false
         Target: es2020
         External:
           - aws-sdk
           - pg-hstore
           - pg
+          - mysql2
+          - sequelize
+          - "@aws-sdk/client-secrets-manager"
         EntryPoints:
           - src/handlers/posts/create.ts

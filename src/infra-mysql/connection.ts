@@ -4,10 +4,10 @@ import getMysqlCredentials from '../aws-secrets/index';
 
 let sequelize: Sequelize;
 
-export async function initializeDatabase(): Promise<void> {
+export async function initializeDatabase(): Promise<Sequelize> {
   if (sequelize) {
     console.info(`Already connected to MySQL.`);
-    return;
+    return sequelize;
   }
 
   const { host, user, password, database } = await getMysqlCredentials();
@@ -15,19 +15,21 @@ export async function initializeDatabase(): Promise<void> {
   try {
     sequelize = new Sequelize(database, user, password, {
       host,
-      dialect: 'mysql', // Use 'mysql' for MySQL
+      dialect: 'mysql',
       dialectModule: mysql2,
-      logging: false, // Disable SQL query logging
+      logging: false,
       pool: {
-        max: 10, // Maximum number of connections in the pool
+        max: 2, // Maximum number of connections in the pool
         min: 0, // Minimum number of connections in the pool
-        acquire: 30000, // Maximum time (in ms) to acquire a connection
-        idle: 10000, // Maximum time (in ms) a connection can be idle before being released
+        acquire: 0, // Maximum time (in ms) to acquire a connection
+        idle: 0, // Maximum time (in ms) a connection can be idle before being released
       },
     });
 
     await sequelize.authenticate(); // Ensure connection works
     console.info(`Connected to MySQL: ${host}/${database}`);
+
+    return sequelize;
   } catch (error) {
     console.error(`Error connecting to MySQL: ${host}/${database}`, { error });
     throw error;
