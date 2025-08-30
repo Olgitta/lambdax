@@ -1,7 +1,7 @@
 import { Model } from 'sequelize';
 
 import { initializePostModel } from './modelFactory';
-import { IPostCreatePayload } from './definitions';
+import { IPostCreatePayload } from './types';
 
 export async function createPost(payload: IPostCreatePayload): Promise<Model> {
   const postModel = await initializePostModel();

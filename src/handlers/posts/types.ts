@@ -23,6 +23,6 @@ export interface IPostAttributes {
 
 export interface IPostCreationAttributes
   extends Optional<
-    PostAttributes,
+    IPostAttributes,
     'id' | 'likes' | 'createdAt' | 'updatedAt'
   > {}

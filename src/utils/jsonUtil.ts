@@ -4,7 +4,7 @@ export function toJson<T>(payload: string | null | undefined): T {
   }
 
   try {
-    const parsed = JSON.parse(payload);
+    const parsed = JSON.parse(payload) as unknown;
     return parsed as T;
   } catch (error) {
     throw new Error(`Failed to parse JSON payload: ${error}`);

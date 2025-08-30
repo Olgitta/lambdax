@@ -1,6 +1,6 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { createPost } from './crud';
-import { IPostCreatePayload, IPostRequestBody } from './definitions';
+import { IPostCreatePayload, IPostRequestBody } from './types';
 import { toJson } from '../../utils/jsonUtil';
 
 export const handler = async (

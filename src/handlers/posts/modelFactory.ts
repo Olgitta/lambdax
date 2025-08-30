@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { initializeDatabase } from '../../infra-mysql/connection';
-import { IPostAttributes, IPostCreationAttributes } from './definitions';
+import { IPostAttributes, IPostCreationAttributes } from './types';
 
 let initialized = false;
 
